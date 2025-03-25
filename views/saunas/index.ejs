@@ -1,0 +1,42 @@
+<% layout('layouts/boiler') -%>
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">サウナ一覧</h1>
+        <a href="/saunas/new" class="btn btn-primary">
+            <i class="fas fa-plus-circle me-2"></i>新規登録
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <% for(let sauna of saunas){ %>
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                <img src="<%= sauna.image %>" class="card-img-top" alt="<%= sauna.title %>" 
+                     style="height: 200px; object-fit: cover;">
+                <div class="card-body">
+                    <h5 class="card-title"><%= sauna.title %></h5>
+                    <p class="card-text">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        <%= sauna.location %>
+                    </p>
+                    <p class="card-text text-muted">
+                        <small>
+                            <i class="fas fa-yen-sign me-1"></i><%= sauna.price.toLocaleString() %>円
+                        </small>
+                    </p>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="/saunas/<%= sauna._id %>" class="btn btn-outline-primary">
+                            <i class="fas fa-info-circle me-1"></i>詳細
+                        </a>
+                        <a href="/saunas/<%= sauna._id %>/edit" class="btn btn-outline-secondary">
+                            <i class="fas fa-edit me-1"></i>編集
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
+    </div>
+</div>

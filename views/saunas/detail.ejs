@@ -1,0 +1,40 @@
+<% layout('layouts/boiler') -%>
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="<%= sauna.image %>" alt="<%= sauna.title %>" class="img-fluid rounded shadow-sm mb-4">
+        </div>
+        <div class="col-md-6">
+            <div class="mb-4">
+                <h1 class="display-5 fw-bold mb-3"><%= sauna.title %></h1>
+                <p class="lead">
+                    <i class="fas fa-map-marker-alt me-2"></i><%= sauna.location %>
+                </p>
+                <p class="text-muted fs-5">
+                    <i class="fas fa-yen-sign me-2"></i>
+                    <%= sauna.price.toLocaleString() %>円（税込）
+                </p>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="mb-3">施設の説明</h4>
+                <p class="text-muted"><%= sauna.description %></p>
+            </div>
+
+            <div class="d-flex gap-2 mb-4">
+                <a href="/saunas/<%= sauna._id %>/edit" class="btn btn-info">
+                    <i class="fas fa-edit me-2"></i>編集する
+                </a>
+                <form action="/saunas/<%= sauna._id %>?_method=DELETE" method="POST" class="d-inline">
+                    <button class="btn btn-danger" onclick="return confirm('本当に削除しますか？')">
+                        <i class="fas fa-trash me-2"></i>削除する
+                    </button>
+                </form>
+            </div>
+
+            <a href="/saunas" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>一覧に戻る
+            </a>
+        </div>
+    </div>
+</div>

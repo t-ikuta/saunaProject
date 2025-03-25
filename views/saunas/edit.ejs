@@ -1,0 +1,52 @@
+<% layout('layouts/boiler') -%>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mb-4">
+                <i class="fas fa-edit me-2"></i><%= sauna.title %>の編集
+            </h1>
+            <form action="/saunas/<%= sauna._id %>/?_method=PUT" method="POST" novalidate class="validated-form">
+                <div class="mb-3">
+                    <label for="title" class="form-label">サウナ施設の名前</label>
+                    <input type="text" class="form-control" id="title" name="sauna[title]" value="<%= sauna.title %>" required>
+                    <div class="valid-feedback">OK!</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="location" class="form-label">場所</label>
+                    <input type="text" class="form-control" id="location" name="sauna[location]" value="<%= sauna.location %>" required>
+                    <div class="valid-feedback">OK!</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">画像URL</label>
+                    <input type="text" class="form-control" id="image" name="sauna[image]" value="<%= sauna.image %>" required>
+                    <div class="valid-feedback">OK!</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label">価格</label>
+                    <div class="input-group">
+                        <span class="input-group-text">¥</span>
+                        <input type="number" class="form-control" id="price" name="sauna[price]" value="<%= sauna.price %>" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="description" class="form-label">説明</label>
+                    <textarea class="form-control" id="description" name="sauna[description]" rows="3" required><%= sauna.description %></textarea>
+                    <div class="valid-feedback">OK!</div>
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-success me-2">
+                        <i class="fas fa-save me-2"></i>保存する
+                    </button>
+                    <a href="/saunas/<%= sauna._id %>" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>詳細に戻る
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
