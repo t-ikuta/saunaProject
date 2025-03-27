@@ -1,40 +1,116 @@
 <% layout('layouts/boiler') -%>
 <div class="container my-5">
-    <div class="row">
-        <div class="col-md-6">
-            <img src="<%= sauna.image %>" alt="<%= sauna.title %>" class="img-fluid rounded shadow-sm mb-4">
+    <div class="card shadow-sm mb-5">
+        <div class="row g-0">
+            <div class="col-md-6">
+                <img src="<%= sauna.image %>" alt="<%= sauna.title %>" class="img-fluid h-100 object-fit-cover rounded-start">
+            </div>
+            <div class="col-md-6">
+                <div class="card-body">
+                    <h1 class="card-title display-5 fw-bold mb-3"><%= sauna.title %></h1>
+                    <div class="mb-4">
+                        <p class="lead mb-2">
+                            <i class="fas fa-map-marker-alt text-danger me-2"></i><%= sauna.location %>
+                        </p>
+                        <p class="fs-4 text-success">
+                            <i class="fas fa-yen-sign me-2"></i><%= sauna.price %>円（税込）
+                        </p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="border-bottom pb-2">施設の説明</h4>
+                        <p class="card-text"><%= sauna.description %></p>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <a href="/saunas/<%= sauna._id %>/edit" class="btn btn-outline-primary">
+                            <i class="fas fa-edit me-2"></i>編集する
+                        </a>
+                        <form action="/saunas/<%= sauna._id %>?_method=DELETE" method="POST" class="d-inline">
+                            <button class="btn btn-outline-danger" onclick="return confirm('本当に削除しますか？')">
+                                <i class="fas fa-trash me-2"></i>削除する
+                            </button>
+                        </form>
+                        <a href="/saunas" class="btn btn-outline-secondary ms-auto">
+                            <i class="fas fa-arrow-left me-2"></i>一覧に戻る
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <div class="row g-4">
         <div class="col-md-6">
-            <div class="mb-4">
-                <h1 class="display-5 fw-bold mb-3"><%= sauna.title %></h1>
-                <p class="lead">
-                    <i class="fas fa-map-marker-alt me-2"></i><%= sauna.location %>
-                </p>
-                <p class="text-muted fs-5">
-                    <i class="fas fa-yen-sign me-2"></i>
-                    <%= sauna.price %>円（税込）
-                </p>
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">レビューを投稿</h4>
+                    <form action="/saunas/<%= sauna._id %>/reviews" method="POST" novalidate class="validated-form">
+                        <div class="mb-3">
+                            <label class="form-label d-flex justify-content-between">
+                                評価
+                                <span class="badge bg-primary" id="ratingValue">3点</span>
+                            </label>
+                            <input type="range" class="form-range" name="review[rating]" id="rating" 
+                                min="1" max="5" step="1" value="3" 
+                                oninput="ratingValue.textContent = this.value + '点'" required>
+                            <div class="d-flex justify-content-between px-2 small text-muted">
+                                <span>良くない</span>
+                                <span>普通</span>
+                                <span>とても良い</span>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">コメント</label>
+                            <textarea class="form-control" name="review[comment]" id="comment" rows="3" required></textarea>
+                            <div class="valid-feedback">OK!</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">投稿する</button>
+                    </form>
+                </div>
             </div>
+        </div>
 
-            <div class="mb-4">
-                <h4 class="mb-3">施設の説明</h4>
-                <p class="text-muted"><%= sauna.description %></p>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title mb-4">レビュー一覧</h4>
+                    <% if(sauna.reviews.length) { %>
+                        <div class="list-group list-group-flush">
+                            <% for(let review of sauna.reviews) { %>
+                                <div class="list-group-item px-0">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <div>
+                                            <% for(let i = 0; i < review.rating; i++) { %>
+                                                <i class="fas fa-star text-warning"></i>
+                                            <% } %>
+                                            <span class="text-muted ms-2">(<%= review.rating %>点)</span>
+                                        </div>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <small class="text-muted">
+                                                <%= review.createdAt.toLocaleDateString() %>
+                                            </small>
+                                            <form action="/saunas/<%= sauna._id %>/reviews/<%= review._id %>?_method=DELETE" 
+                                                  method="POST" class="d-inline">
+                                                <button class="btn btn-sm btn-outline-danger" 
+                                                        onclick="return confirm('このレビューを削除してもよろしいですか？')">
+                                                    <i class="fas fa-trash-alt"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0"><%= review.comment %></p>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center text-muted py-5">
+                            <i class="fas fa-comment-slash fa-2x mb-3"></i>
+                            <p class="mb-0">まだレビューがありません。<br>最初のレビューを投稿してみましょう！</p>
+                        </div>
+                    <% } %>
+                </div>
             </div>
-
-            <div class="d-flex gap-2 mb-4">
-                <a href="/saunas/<%= sauna._id %>/edit" class="btn btn-info">
-                    <i class="fas fa-edit me-2"></i>編集する
-                </a>
-                <form action="/saunas/<%= sauna._id %>?_method=DELETE" method="POST" class="d-inline">
-                    <button class="btn btn-danger" onclick="return confirm('本当に削除しますか？')">
-                        <i class="fas fa-trash me-2"></i>削除する
-                    </button>
-                </form>
-            </div>
-
-            <a href="/saunas" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-2"></i>一覧に戻る
-            </a>
         </div>
     </div>
 </div>

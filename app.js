@@ -4,10 +4,12 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const morgan = require('morgan');
 const ejsMate = require("ejs-mate");
-const Sauna = require("./models/sauna");
 const catchAsync = require("./convenient/catchAsync");
 const ExpressError = require("./convenient/ExpressError");
-const {saunaSchema} = require("./joi_schemas");
+const {saunaSchema, reviewSchema} = require("./joi_schemas");
+
+const Sauna = require("./models/sauna");
+const Review = require("./models/review");
 
 const app = express();
 
@@ -27,10 +29,20 @@ mongoose.connect("mongodb://localhost:27017/saunaProject")
         console.log(`コネクションエラー：${e}`);
     });
 
-// Joiを使用したサーバーサイドのバリデーションチェック関数
+// Joiを使用したサーバーサイドのバリデーションチェック関数(ミドルウェア)
 const validationSauna = (req, res, next) => {
     const {error} = saunaSchema.validate(req.body);
     if(error) {
+        const msg = error.details.map(detail => detail.message).join(",");
+        throw new ExpressError(msg, 400);
+    }else{
+        next();
+    }
+}
+
+const validateReview = (req, res, next) => {
+    const {error} = reviewSchema.validate(req.body);
+    if(error){
         const msg = error.details.map(detail => detail.message).join(",");
         throw new ExpressError(msg, 400);
     }else{
@@ -44,7 +56,6 @@ app.get("/", (req, res) => {
 
 app.get("/saunas", catchAsync(async(req, res) => {
     const saunas = await Sauna.find({});
-    console.log(saunas);
     res.render("saunas/index", {saunas}); 
 }));
 
@@ -61,8 +72,26 @@ app.post("/saunas", validationSauna, catchAsync( async (req, res) => {
 
 // 詳細
 app.get("/saunas/:id", catchAsync(async(req, res) => {
-    const sauna = await Sauna.findById(req.params.id);
+    const sauna = await Sauna.findById(req.params.id).populate('reviews');
     res.render("saunas/detail", {sauna});
+}));
+
+// レビュー登録
+app.post("/saunas/:id/reviews", validateReview, catchAsync(async(req, res) => {
+    const sauna = await Sauna.findById(req.params.id);
+    const review = new Review(req.body.review);
+    sauna.reviews.push(review);
+    await review.save();
+    await sauna.save();
+    res.redirect(`/saunas/${sauna._id}`);
+}));
+
+// レビューの削除(レビューとサウナに紐づいたレビューIDを削除)
+app.delete("/saunas/:id/reviews/:reviewId", catchAsync(async (req, res) => {
+    const {id, reviewId} = req.params;
+    await Sauna.findByIdAndUpdate(id, {$pull: {reviews: reviewId}});
+    await Review.findByIdAndDelete(reviewId);
+    res.redirect(`/saunas/${id}`);
 }));
 
 // 編集ページへ
@@ -75,11 +104,10 @@ app.get("/saunas/:id/edit", catchAsync(async (req, res) => {
 app.put("/saunas/:id", validationSauna, catchAsync(async (req, res) => {
     const {id} = req.params;
     const sauna = await Sauna.findByIdAndUpdate(id, {...req.body.sauna});
-    console.log(sauna);
     res.redirect(`/saunas/${sauna._id}`);
 }));
 
-// 削除
+// サウナの削除
 app.delete("/saunas/:id", catchAsync(async (req, res) => {
     const {id} = req.params;
     await Sauna.findByIdAndDelete(id);
