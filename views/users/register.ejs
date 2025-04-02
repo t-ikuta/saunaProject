@@ -1,0 +1,43 @@
+<% layout('layouts/boiler') -%>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title text-center mb-4">ユーザー登録</h1>
+                    <form action="/register" method="POST" class="validated-form" novalidate>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">ユーザー名</label>
+                            <input type="text" class="form-control" id="username" name="username" required autofocus>
+                            <div class="valid-feedback">
+                                OK!
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">メールアドレス</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                            <div class="valid-feedback">
+                                OK!
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">パスワード</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="valid-feedback">
+                                OK!
+                            </div>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success" type="submit">登録する</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <p class="text-muted">
+                    すでにアカウントをお持ちの方は<a href="/login" class="text-decoration-none">こちら</a>からログイン
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

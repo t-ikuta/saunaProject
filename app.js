@@ -6,10 +6,14 @@ const morgan = require('morgan');
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const User = require("./models/user");
 
 const ExpressError = require("./convenient/ExpressError");
 const saunaRoutes = require('./routes/saunas');
 const reviewRoutes = require('./routes/reviews');
+const userRoutes = require("./routes/users");
 
 const app = express();
 
@@ -41,6 +45,13 @@ app.use(session({
     }
 }));
 
+// パスポートの設定
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 // フラッシュメッセージの設定
 app.use(flash());
 app.use((req, res, next) => {
@@ -55,9 +66,10 @@ app.get("/", (req, res) => {
 
 // 静的ファイルの提供
 // app.use(express.static(path.join(__dirname, "public")));
-// ルーティングの設定
+// ルーティングの定義
 app.use('/saunas', saunaRoutes);
 app.use('/saunas/:id/reviews', reviewRoutes);
+app.use("/", userRoutes);
 
 // エラーハンドリング
 app.all("*", (req, res, next) => {
