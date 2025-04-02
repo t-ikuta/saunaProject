@@ -18,7 +18,6 @@ const saunaSchema = new Schema({
 });
 
 saunaSchema.post("findOneAndDelete", async function(doc){
-    console.log(`ここからーーーーーーーーーー${doc}ここまでーーーーーーーーーー`);
     if(doc){
         await Review.deleteMany({_id: {$in: doc.reviews}});
     }

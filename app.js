@@ -5,8 +5,9 @@ const methodOverride = require("method-override");
 const morgan = require('morgan');
 const ejsMate = require("ejs-mate");
 const session = require("express-session");
-const ExpressError = require("./convenient/ExpressError");
+const flash = require("connect-flash");
 
+const ExpressError = require("./convenient/ExpressError");
 const saunaRoutes = require('./routes/saunas');
 const reviewRoutes = require('./routes/reviews');
 
@@ -15,7 +16,7 @@ const app = express();
 // ミドルウェアの設定
 app.use(express.urlencoded({extended:true}));
 app.use(methodOverride("_method"));
-app.use(morgan('tiny'));
+// app.use(morgan('tiny'));
 app.engine('ejs', ejsMate);
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
@@ -39,6 +40,14 @@ app.use(session({
         httpOnly: true,
     }
 }));
+
+// フラッシュメッセージの設定
+app.use(flash());
+app.use((req, res, next) => {
+    res.locals.success = req.flash("success");
+    res.locals.error = req.flash("error");
+    next();
+});
 
 app.get("/", (req, res) => {
     res.send("ホーム");

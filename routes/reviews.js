@@ -24,10 +24,7 @@ router.post("/", validateReview, catchAsync(async (req, res) => {
     sauna.reviews.push(review);
     await review.save();
     await sauna.save();
-    req.session.flash = {
-        type: 'success',
-        message: 'レビューを投稿しました！'
-    };
+    req.flash('success', 'レビューを投稿しました！');
     res.redirect(`/saunas/${sauna._id}`);
 }));
 
@@ -36,10 +33,7 @@ router.delete("/:reviewId", catchAsync(async (req, res) => {
     const { id, reviewId } = req.params;
     await Sauna.findByIdAndUpdate(id, { $pull: { reviews: reviewId } });
     await Review.findByIdAndDelete(reviewId);
-    req.session.flash = {
-        type: 'success',
-        message: 'レビューを削除しました'
-    };
+    req.flash('success', 'レビューを削除しました');
     res.redirect(`/saunas/${id}`);
 }));
 

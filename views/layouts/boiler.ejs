@@ -13,6 +13,8 @@
 <body class="d-flex flex-column vh-100">
     <!-- パーシャルをインクルード（ナビバー） -->
     <%- include("../partials/navbar") %>
+    <!-- フラッシュメッセージを表示 -->
+    <%- include("../partials/flash") %> 
     <main class="container mt-5">
         <%- body -%><!-- ここに他のejsファイルで定義したlayout("layouts/boilerplate")のbody部分が入る -->
     </main>

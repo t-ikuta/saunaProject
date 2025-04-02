@@ -31,10 +31,7 @@ router.get("/new", (req, res) => {
 router.post("/", validationSauna, catchAsync(async (req, res) => {
     const sauna = new Sauna(req.body.sauna);
     await sauna.save();
-    req.session.flash = {
-        type: 'success',
-        message: '新しいサウナを登録しました！'
-    };
+    req.flash('success', '新しいサウナを登録しました！');
     res.redirect(`/saunas/${sauna._id}`);
 }));
 
@@ -42,7 +39,8 @@ router.post("/", validationSauna, catchAsync(async (req, res) => {
 router.get("/:id", catchAsync(async (req, res) => {
     const sauna = await Sauna.findById(req.params.id).populate('reviews');
     if (!sauna) {
-        throw new ExpressError('サウナが見つかりません', 404);
+        req.flash('error', 'サウナが見つかりません');
+        return res.redirect("/saunas");
     }
     res.render("saunas/detail", { sauna });
 }));
@@ -51,7 +49,8 @@ router.get("/:id", catchAsync(async (req, res) => {
 router.get("/:id/edit", catchAsync(async (req, res) => {
     const sauna = await Sauna.findById(req.params.id);
     if (!sauna) {
-        throw new ExpressError('サウナが見つかりません', 404);
+        req.flash('error', 'サウナが見つかりませんでした');
+        return res.redirect("/saunas");
     }
     res.render("saunas/edit", { sauna });
 }));
@@ -60,10 +59,7 @@ router.get("/:id/edit", catchAsync(async (req, res) => {
 router.put("/:id", validationSauna, catchAsync(async (req, res) => {
     const { id } = req.params;
     const sauna = await Sauna.findByIdAndUpdate(id, { ...req.body.sauna });
-    req.session.flash = {
-        type: 'success',
-        message: '施設情報を更新しました'
-    };
+    req.flash('success', '施設情報を更新しました');
     res.redirect(`/saunas/${sauna._id}`);
 }));
 
@@ -71,10 +67,7 @@ router.put("/:id", validationSauna, catchAsync(async (req, res) => {
 router.delete("/:id", catchAsync(async (req, res) => {
     const { id } = req.params;
     await Sauna.findByIdAndDelete(id);
-    req.session.flash = {
-        type: 'success',
-        message: '施設を削除しました'
-    };
+    req.flash('success', '施設を削除しました');
     res.redirect("/saunas");
 }));
 
