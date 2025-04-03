@@ -52,11 +52,13 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-// フラッシュメッセージの設定
 app.use(flash());
 app.use((req, res, next) => {
+    // フラッシュメッセージの設定
     res.locals.success = req.flash("success");
     res.locals.error = req.flash("error");
+    // ログインユーザーの情報を格納
+    res.locals.currentUser = req.user;
     next();
 });
 

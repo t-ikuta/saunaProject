@@ -4,6 +4,7 @@ const catchAsync = require("../convenient/catchAsync");
 const { saunaSchema } = require("../joi_schemas");
 const ExpressError = require("../convenient/ExpressError");
 const Sauna = require("../models/sauna");
+const {logined} = require("../middleware");
 
 // Joiを使用したバリデーションミドルウェア
 const validationSauna = (req, res, next) => {
@@ -23,12 +24,12 @@ router.get("/", catchAsync(async (req, res) => {
 }));
 
 // 新規作成フォーム
-router.get("/new", (req, res) => {
+router.get("/new", logined, (req, res) => {
     res.render("saunas/new");
 });
 
 // 新規登録
-router.post("/", validationSauna, catchAsync(async (req, res) => {
+router.post("/", logined, validationSauna, catchAsync(async (req, res) => {
     const sauna = new Sauna(req.body.sauna);
     await sauna.save();
     req.flash('success', '新しいサウナを登録しました！');
@@ -46,7 +47,7 @@ router.get("/:id", catchAsync(async (req, res) => {
 }));
 
 // 編集フォーム
-router.get("/:id/edit", catchAsync(async (req, res) => {
+router.get("/:id/edit", logined, catchAsync(async (req, res) => {
     const sauna = await Sauna.findById(req.params.id);
     if (!sauna) {
         req.flash('error', 'サウナが見つかりませんでした');
@@ -56,7 +57,7 @@ router.get("/:id/edit", catchAsync(async (req, res) => {
 }));
 
 // 更新
-router.put("/:id", validationSauna, catchAsync(async (req, res) => {
+router.put("/:id", logined, validationSauna, catchAsync(async (req, res) => {
     const { id } = req.params;
     const sauna = await Sauna.findByIdAndUpdate(id, { ...req.body.sauna });
     req.flash('success', '施設情報を更新しました');
@@ -64,7 +65,7 @@ router.put("/:id", validationSauna, catchAsync(async (req, res) => {
 }));
 
 // 削除
-router.delete("/:id", catchAsync(async (req, res) => {
+router.delete("/:id", logined, catchAsync(async (req, res) => {
     const { id } = req.params;
     await Sauna.findByIdAndDelete(id);
     req.flash('success', '施設を削除しました');

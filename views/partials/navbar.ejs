@@ -5,10 +5,29 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <div class="navbar-nav ms-auto">
+            <div class="navbar-nav me-auto">
                 <a class="nav-link px-3" href="/saunas"><i class="fas fa-home me-1"></i>ホーム</a>
                 <a class="nav-link px-3" href="/saunas"><i class="fas fa-list me-1"></i>サウナ施設</a>
                 <a class="nav-link px-3" href="/saunas/new"><i class="fas fa-plus-circle me-1"></i>新規登録</a>
+            </div>
+            <div class="navbar-nav">
+                <% if(!currentUser) { %>
+                    <a class="nav-link px-3" href="/register">
+                        <i class="fas fa-user-plus me-1"></i>アカウント作成
+                    </a>
+                    <a class="nav-link px-3" href="/login">
+                        <i class="fas fa-sign-in-alt me-1"></i>ログイン
+                    </a>
+                <% } else { %>
+                    <span class="navbar-text px-3">
+                        <i class="fas fa-user me-1"></i>ようこそ、<%= currentUser.username %>さん
+                    </span>
+                    <form action="/logout" method="POST" class="d-inline">
+                        <button class="nav-link px-3 btn btn-link text-decoration-none">
+                            <i class="fas fa-sign-out-alt me-1"></i>ログアウト
+                        </button>
+                    </form>
+                <% } %>
             </div>
         </div>
     </div>
