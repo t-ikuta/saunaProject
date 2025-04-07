@@ -9,6 +9,11 @@ const saunaSchema = new Schema({
     price: Number,
     description: String,
     location: String,
+    // サウナ施設登録したユーザーの情報を追加
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+    },
     reviews: [   // レビューへの参照を配列として追加
         {
             type: Schema.Types.ObjectId,

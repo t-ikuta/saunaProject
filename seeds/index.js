@@ -2,7 +2,6 @@
 const mongoose = require("mongoose");
 const Sauna = require("../models/sauna");
 const cities = require("./cities");
-const {descriptors, places} = require("./seedHelpers");
 
 mongoose.connect("mongodb://localhost:27017/saunaProject", {useNewUrlParser: true,useUnifiedTopology: true})
     .then(() => {
@@ -28,7 +27,8 @@ const seedDB = async () => {
             // image: "https://picsum.photos/400?random=${Math.random()}",
             description: "この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れています。この文章はダミーです。文字の大きさ、量、字間、行間等を確認するために入れ",
             price: `${cities[randumCityIndex].price}`,
-            image: "https://picsum.photos/200/300"
+            image: "https://picsum.photos/200/300",
+            author: '67ecd85c97390e5f5f8f14c2'
         });
         await sauna.save();
     }

@@ -15,14 +15,18 @@
                         <p class="fs-4 text-success">
                             <i class="fas fa-yen-sign me-2"></i><%= sauna.price %>円（税込）
                         </p>
+                        <p class="text-muted">
+                            <i class="fas fa-user me-2"></i>施設登録者: <%= sauna.author.username %>
+                        </p>
                     </div>
 
                     <div class="mb-4">
                         <h4 class="border-bottom pb-2">施設の説明</h4>
                         <p class="card-text"><%= sauna.description %></p>
                     </div>
-
+                    
                     <div class="d-flex gap-2">
+                        <% if(currentUser && sauna.author.equals(currentUser._id)){ %>
                         <a href="/saunas/<%= sauna._id %>/edit" class="btn btn-outline-primary">
                             <i class="fas fa-edit me-2"></i>編集する
                         </a>
@@ -31,6 +35,7 @@
                                 <i class="fas fa-trash me-2"></i>削除する
                             </button>
                         </form>
+                    <% } %>
                         <a href="/saunas" class="btn btn-outline-secondary ms-auto">
                             <i class="fas fa-arrow-left me-2"></i>一覧に戻る
                         </a>
@@ -40,6 +45,7 @@
         </div>
     </div>
 
+    <% if(currentUser){ %>
     <div class="row g-4">
         <div class="col-md-6">
             <div class="card shadow-sm">
@@ -70,6 +76,7 @@
                 </div>
             </div>
         </div>
+        <% } %>
 
         <div class="col-md-6">
             <div class="card shadow-sm">
@@ -90,6 +97,10 @@
                                             <small class="text-muted">
                                                 <%= review.createdAt.toLocaleDateString() %>
                                             </small>
+                                            <small class="text-muted">
+                                                投稿者: <%= review.author.username %>
+                                            </small>
+                                            <% if(currentUser && review.author.equals(currentUser._id)){ %>
                                             <form action="/saunas/<%= sauna._id %>/reviews/<%= review._id %>?_method=DELETE" 
                                                   method="POST" class="d-inline">
                                                 <button class="btn btn-sm btn-outline-danger" 
@@ -97,6 +108,7 @@
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
                                             </form>
+                                            <% } %>
                                         </div>
                                     </div>
                                     <p class="mb-0"><%= review.comment %></p>
@@ -106,7 +118,7 @@
                     <% } else { %>
                         <div class="text-center text-muted py-5">
                             <i class="fas fa-comment-slash fa-2x mb-3"></i>
-                            <p class="mb-0">まだレビューがありません。<br>最初のレビューを投稿してみましょう！</p>
+                            <p class="mb-0">まだレビューがありません。<br>ログインしてレビューを投稿してみましょう！</p>
                         </div>
                     <% } %>
                 </div>
